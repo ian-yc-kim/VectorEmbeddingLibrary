@@ -4,6 +4,12 @@ from similarity_search import AstraDBSimilaritySearch
 
 
 def main():
+    """
+    Main function to run the vector embedding and similarity search process.
+
+    This function loads the configuration, initializes the embedder and similarity search,
+    embeds a sample text, indexes the vector, and queries similar vectors.
+    """
     try:
         # Load configuration
         config = Config()
