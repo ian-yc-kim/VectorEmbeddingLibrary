@@ -18,32 +18,32 @@ def main():
         # Initialize the embedder and similarity search
         embedder = OpenAIEmbedder(config.openai_api_key)
         similarity_search = AstraDBSimilaritySearch(
-            config.astradb['keyspace'],
-            config.astradb['table'],
-            config.astradb['username'],
-            config.astradb['password'],
-            config.astradb['host'],
-            config.astradb['port'],
-            config.astradb['secure_connect_bundle']
+            config.astradb["keyspace"],
+            config.astradb["table"],
+            config.astradb["username"],
+            config.astradb["password"],
+            config.astradb["host"],
+            config.astradb["port"],
+            config.astradb["secure_connect_bundle"],
         )
 
         # Embed a sample text
-        sample_text = 'This is a sample text for embedding.'
+        sample_text = "This is a sample text for embedding."
         vector = embedder.embed_text(sample_text)
-        print(f'Embedded vector: {vector}')
+        print(f"Embedded vector: {vector}")
 
         # Index the vector
-        metadata = {'id': 'sample_id'}
+        metadata = {"id": "sample_id"}
         similarity_search.index_vector(vector, metadata)
-        print('Vector indexed successfully.')
+        print("Vector indexed successfully.")
 
         # Query similar vectors
         top_k = 5
         similar_vectors = similarity_search.query_similar(vector, top_k)
-        print(f'Top {top_k} similar vectors: {similar_vectors}')
+        print(f"Top {top_k} similar vectors: {similar_vectors}")
     except Exception as e:
-        logging.error(f'Error: {str(e)}')
+        logging.error(f"Error: {str(e)}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
