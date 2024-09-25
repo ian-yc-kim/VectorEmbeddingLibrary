@@ -40,6 +40,26 @@ def test_index_vector(similarity_search):
     similarity_search.index_vector(vector, metadata)
     # If no exception is raised, the test passes
 
+def test_index_vector_invalid_vector(similarity_search):
+    vector = 'invalid_vector'
+    metadata = {'id': 'sample_id'}
+    with pytest.raises(ValueError, match="Vector must be a list of numbers."):
+        similarity_search.index_vector(vector, metadata)
+
+def test_index_vector_invalid_metadata(similarity_search):
+    vector = [0.1, 0.2, 0.3]
+    metadata = 'invalid_metadata'
+    with pytest.raises(ValueError, match="Metadata must be a dictionary with an 'id' key."):
+        similarity_search.index_vector(vector, metadata)
+
+def test_index_vectors(similarity_search):
+    vectors_metadata = [
+        ([0.1, 0.2, 0.3], {'id': 'sample_id_1'}),
+        ([0.4, 0.5, 0.6], {'id': 'sample_id_2'})
+    ]
+    similarity_search.index_vectors(vectors_metadata)
+    # If no exception is raised, the test passes
+
 def test_query_similar(similarity_search):
     vector = [0.1, 0.2, 0.3]
     top_k = 1

@@ -91,8 +91,30 @@ class AstraDBSimilaritySearch(SimilaritySearch):
         metadata : dict
             Metadata associated with the vector.
         """
+        # Data validation
+        if not isinstance(vector, list) or not all(isinstance(x, (int, float)) for x in vector):
+            raise ValueError("Vector must be a list of numbers.")
+        if not isinstance(metadata, dict) or 'id' not in metadata:
+            raise ValueError("Metadata must be a dictionary with an 'id' key.")
+
+        # Insert query
         query = f"INSERT INTO {self.keyspace}.{self.table} (id, vector) VALUES (%s, %s)"
-        self.session.execute(query, (metadata['id'], vector))
+        try:
+            self.session.execute(query, (metadata['id'], vector))
+        except Exception as e:
+            raise RuntimeError(f"Failed to index vector: {e}")
+
+    def index_vectors(self, vectors_metadata):
+        """
+        Indexes a batch of vectors with associated metadata in AstraDB.
+
+        Parameters
+        ----------
+        vectors_metadata : list of tuples
+            Each tuple contains a vector and its associated metadata.
+        """
+        for vector, metadata in vectors_metadata:
+            self.index_vector(vector, metadata)
 
     def query_similar(self, vector, top_k):
         """
