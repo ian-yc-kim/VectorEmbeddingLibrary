@@ -42,6 +42,13 @@ class Config:
             "password": os.getenv("ASTRADB_PASSWORD"),
             "secure_connect_bundle": os.getenv("ASTRADB_SECURE_CONNECT_BUNDLE"),
         }
+        self.config["postgresql"] = {
+            "host": os.getenv("POSTGRESQL_HOST", self.config.get("postgresql", {}).get("host")),
+            "port": os.getenv("POSTGRESQL_PORT", self.config.get("postgresql", {}).get("port")),
+            "database": os.getenv("POSTGRESQL_DATABASE", self.config.get("postgresql", {}).get("database")),
+            "username": os.getenv("POSTGRESQL_USERNAME", self.config.get("postgresql", {}).get("username")),
+            "password": os.getenv("POSTGRESQL_PASSWORD", self.config.get("postgresql", {}).get("password")),
+        }
 
     @property
     def embedding_service(self):
@@ -90,3 +97,15 @@ class Config:
             The AstraDB configuration settings.
         """
         return self.config["astradb"]
+
+    @property
+    def postgresql(self):
+        """
+        Returns the PostgreSQL configuration.
+
+        Returns
+        -------
+        dict
+            The PostgreSQL configuration settings.
+        """
+        return self.config["postgresql"]

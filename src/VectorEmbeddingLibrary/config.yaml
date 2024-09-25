@@ -3,3 +3,9 @@ database:
   host: 'localhost'
   port: 9042
   keyspace: 'VectorEmbeddingDB'
+postgresql:
+  host: 'localhost'
+  port: 5432
+  database: 'VectorEmbeddingDB'
+  username: 'VectorEmbeddingDB'
+  password: 'b2f2b399-5b57'
