@@ -37,6 +37,86 @@ You can also set the following environment variables to override the configurati
 - `ASTRADB_PASSWORD`: The password for AstraDB
 - `ASTRADB_SECURE_CONNECT_BUNDLE`: The path to the secure connect bundle for AstraDB
 
+## PostgreSQL Setup and Usage
+
+To configure and use PostgreSQL with the `VectorEmbeddingLibrary`, follow these steps:
+
+### Configuration
+
+Add the following configuration to your `config.yaml` file:
+
+```yaml
+database:
+  type: 'postgresql'
+  host: 'your_postgresql_host'
+  port: 5432
+  dbname: 'VectorEmbeddingDB'
+  user: 'your_postgresql_username'
+  password: 'your_postgresql_password'
+```
+
+You can also set the following environment variables to override the configuration:
+
+- `DB_TYPE`: The database type (default: `postgresql`)
+- `DB_HOST`: The PostgreSQL host (default: `localhost`)
+- `DB_PORT`: The PostgreSQL port (default: `5432`)
+- `DB_NAME`: The PostgreSQL database name (default: `VectorEmbeddingDB`)
+- `DB_USER`: The PostgreSQL username
+- `DB_PASSWORD`: The PostgreSQL password
+
+### Usage
+
+To use PostgreSQL for storing and querying vector embeddings, you need to initialize the database connection and perform the necessary operations. Below is an example of how to do this:
+
+```python
+import psycopg2
+
+# Initialize the PostgreSQL connection
+conn = psycopg2.connect(
+    host='your_postgresql_host',
+    port=5432,
+    dbname='VectorEmbeddingDB',
+    user='your_postgresql_username',
+    password='your_postgresql_password'
+)
+
+# Create a cursor object
+cur = conn.cursor()
+
+# Example: Create a table for storing vector embeddings
+cur.execute('''
+CREATE TABLE IF NOT EXISTS vector_embeddings (
+    id SERIAL PRIMARY KEY,
+    vector FLOAT8[] NOT NULL,
+    metadata JSONB
+);
+''')
+
+# Commit the transaction
+conn.commit()
+
+# Example: Insert a vector embedding with metadata
+vector = [0.1, 0.2, 0.3]
+metadata = {'id': 'sample_id'}
+cur.execute(
+    'INSERT INTO vector_embeddings (vector, metadata) VALUES (%s, %s)',
+    (vector, json.dumps(metadata))
+)
+
+# Commit the transaction
+conn.commit()
+
+# Example: Query similar vectors (this is a placeholder, implement your own similarity search logic)
+cur.execute('SELECT * FROM vector_embeddings')
+rows = cur.fetchall()
+for row in rows:
+    print(row)
+
+# Close the cursor and connection
+cur.close()
+conn.close()
+```
+
 ## Usage
 
 ### OpenAIEmbedder
