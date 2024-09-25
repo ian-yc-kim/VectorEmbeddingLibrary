@@ -79,6 +79,7 @@ metadata = {'id': 'sample_id'}
 similarity_search.index_vector(vector, metadata)
 
 # Query similar vectors
+# Query similar vectors
 top_k = 5
 similar_vectors = similarity_search.query_similar(vector, top_k)
 print(similar_vectors)
@@ -93,3 +94,30 @@ poetry run pytest
 ```
 
 This will execute all the tests in the `tests` directory.
+
+## Developer Guide
+
+### Architecture
+
+The library is structured into several modules:
+
+- `embedding.py`: Contains the `VectorEmbedder` abstract base class and the `OpenAIEmbedder` concrete class for embedding text into vectors.
+- `similarity_search.py`: Contains the `SimilaritySearch` abstract base class and the `AstraDBSimilaritySearch` concrete class for performing similarity searches.
+- `config.py`: Handles the configuration of the library using a `config.yaml` file and environment variables.
+- `main.py`: The main entry point for running the vector embedding and similarity search process.
+
+### Coding Standards
+
+- Follow PEP 8 guidelines for Python code style.
+- Write clear and concise docstrings for all classes, methods, and functions.
+- Use meaningful variable and function names.
+- Prioritize code readability and maintainability.
+
+### Testing Procedures
+
+- Write unit tests for all new functions and classes.
+- Use `pytest` as the testing framework.
+- Mock external dependencies and API calls in tests.
+- Test both normal scenarios and edge cases.
+- Use descriptive names for test functions.
+- Ensure tests cover the specific functionality implemented.
