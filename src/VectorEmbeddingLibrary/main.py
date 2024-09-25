@@ -1,6 +1,7 @@
 from config import Config
 from embedding import OpenAIEmbedder
 from similarity_search import AstraDBSimilaritySearch
+import logging
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
         similar_vectors = similarity_search.query_similar(vector, top_k)
         print(f'Top {top_k} similar vectors: {similar_vectors}')
     except Exception as e:
-        print(f'Error: {str(e)}')
+        logging.error(f'Error: {str(e)}')
 
 
 if __name__ == '__main__':
