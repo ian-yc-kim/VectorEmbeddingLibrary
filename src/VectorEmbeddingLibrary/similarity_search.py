@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 import os
+import numpy as np
 
 class SimilaritySearch(ABC):
     """
@@ -130,14 +131,17 @@ class AstraDBSimilaritySearch(SimilaritySearch):
         Returns
         -------
         list
-            A list of tuples containing the id and distance of the top_k similar vectors.
+            A list of tuples containing the id and similarity score of the top_k similar vectors.
         """
-        query = f"SELECT id, vector FROM {self.keyspace}.{self.table}"
+        # Use AstraDB's built-in similarity search functions
+        query = f"SELECT id, vector FROM {self.keyspace}.{self.table} ORDER BY vector ANN OF {vector} LIMIT {top_k}"
         rows = self.session.execute(query)
-        # Implement a simple similarity search (e.g., Euclidean distance)
-        results = []
-        for row in rows:
-            distance = sum((a - b) ** 2 for a, b in zip(vector, row.vector)) ** 0.5
-            results.append((row.id, distance))
-        results.sort(key=lambda x: x[1])
-        return results[:top_k]
+        
+        # Calculate cosine similarity
+        def cosine_similarity(v1, v2):
+            v1 = np.array(v1)
+            v2 = np.array(v2)
+            return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+        
+        results = [(row.id, cosine_similarity(vector, row.vector)) for row in rows]
+        return results

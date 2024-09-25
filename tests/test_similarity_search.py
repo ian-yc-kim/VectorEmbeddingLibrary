@@ -63,6 +63,6 @@ def test_index_vectors(similarity_search):
 def test_query_similar(similarity_search):
     vector = [0.1, 0.2, 0.3]
     top_k = 1
-    expected_result = [('sample_id', 0.0)]
+    expected_result = [('sample_id', 1.0)]  # Cosine similarity of identical vectors is 1.0
     result = similarity_search.query_similar(vector, top_k)
     assert result == expected_result
