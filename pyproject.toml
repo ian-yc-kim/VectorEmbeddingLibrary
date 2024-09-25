@@ -8,6 +8,7 @@ packages = [{include = "VectorEmbeddingLibrary", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+openai = "^1.47.1"
 
 
 [tool.poetry.group.dev.dependencies]
