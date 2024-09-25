@@ -9,6 +9,7 @@ packages = [{include = "VectorEmbeddingLibrary", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 openai = "^1.47.1"
+cassandra-driver = "^3.29.2"
 
 
 [tool.poetry.group.dev.dependencies]
