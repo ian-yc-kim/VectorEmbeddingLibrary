@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import openai
+import logging
 
 class VectorEmbedder(ABC):
     """
@@ -39,6 +40,7 @@ class OpenAIEmbedder(VectorEmbedder):
         """
         self.api_key = api_key
         openai.api_key = api_key
+        self.logger = logging.getLogger(__name__)
 
     def embed_text(self, text: str) -> list:
         """
@@ -54,5 +56,9 @@ class OpenAIEmbedder(VectorEmbedder):
         list
             The embedded vector.
         """
-        response = openai.Embedding.create(input=text, model="text-embedding-ada-002")
-        return response['data'][0]['embedding']
+        try:
+            response = openai.Embedding.create(input=text, model="text-embedding-ada-002")
+            return response['data'][0]['embedding']
+        except Exception as e:
+            self.logger.error(f"Error embedding text: {e}")
+            return []
