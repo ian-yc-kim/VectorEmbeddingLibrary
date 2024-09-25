@@ -1,20 +1,22 @@
-import os
+from config import Config
 from embedding import OpenAIEmbedder
 from similarity_search import AstraDBSimilaritySearch
 
 
 def main():
     try:
+        # Load configuration
+        config = Config()
+
         # Initialize the embedder and similarity search
-        api_key = os.getenv('OPENAI_API_KEY')
-        embedder = OpenAIEmbedder(api_key)
-        
-        keyspace = os.getenv('ASTRADB_KEYSPACE')
-        table = os.getenv('ASTRADB_TABLE')
-        username = os.getenv('ASTRADB_USERNAME')
-        password = os.getenv('ASTRADB_PASSWORD')
-        secure_connect_bundle = os.getenv('ASTRADB_SECURE_CONNECT_BUNDLE')
-        similarity_search = AstraDBSimilaritySearch(keyspace, table, username, password, secure_connect_bundle)
+        embedder = OpenAIEmbedder(config.openai_api_key)
+        similarity_search = AstraDBSimilaritySearch(
+            config.astradb['keyspace'],
+            config.astradb['table'],
+            config.astradb['username'],
+            config.astradb['password'],
+            config.astradb['secure_connect_bundle']
+        )
 
         # Embed a sample text
         sample_text = 'This is a sample text for embedding.'
