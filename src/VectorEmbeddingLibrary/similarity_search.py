@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+import os
 
 class SimilaritySearch(ABC):
     @abstractmethod
@@ -12,11 +13,16 @@ class SimilaritySearch(ABC):
         pass
 
 class AstraDBSimilaritySearch(SimilaritySearch):
-    def __init__(self, keyspace, table, username, password, secure_connect_bundle):
+    def __init__(self, keyspace, table, username, password, host=None, port=None, secure_connect_bundle=None):
         self.keyspace = keyspace
         self.table = table
         self.auth_provider = PlainTextAuthProvider(username=username, password=password)
-        self.cluster = Cluster(cloud={'secure_connect_bundle': secure_connect_bundle}, auth_provider=self.auth_provider)
+        if secure_connect_bundle and os.path.exists(secure_connect_bundle):
+            # Use secure connect bundle if provided
+            self.cluster = Cluster(cloud={'secure_connect_bundle': secure_connect_bundle}, auth_provider=self.auth_provider)
+        else:
+            # Use host and port if secure connect bundle is not provided
+            self.cluster = Cluster(contact_points=[host], port=port, auth_provider=self.auth_provider)
         self.session = self.cluster.connect()
 
     def index_vector(self, vector, metadata):

@@ -15,6 +15,8 @@ def main():
             config.astradb['table'],
             config.astradb['username'],
             config.astradb['password'],
+            config.astradb['host'],
+            config.astradb['port'],
             config.astradb['secure_connect_bundle']
         )
 

@@ -8,6 +8,7 @@ class VectorEmbedder(ABC):
 
 class OpenAIEmbedder(VectorEmbedder):
     def __init__(self, api_key: str):
+        self.api_key = api_key
         openai.api_key = api_key
 
     def embed_text(self, text: str) -> list:
