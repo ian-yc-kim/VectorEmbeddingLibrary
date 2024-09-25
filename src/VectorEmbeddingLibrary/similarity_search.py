@@ -133,6 +133,12 @@ class AstraDBSimilaritySearch(SimilaritySearch):
         list
             A list of tuples containing the id and similarity score of the top_k similar vectors.
         """
+        # Data validation
+        if not isinstance(vector, list) or not all(isinstance(x, (int, float)) for x in vector):
+            raise ValueError("Vector must be a list of numbers.")
+        if len(vector) == 0:
+            raise ValueError("Vector must not be empty.")
+
         # Use AstraDB's built-in similarity search functions
         query = f"SELECT id, vector FROM {self.keyspace}.{self.table} ORDER BY vector ANN OF {vector} LIMIT {top_k}"
         rows = self.session.execute(query)
@@ -144,4 +150,6 @@ class AstraDBSimilaritySearch(SimilaritySearch):
             return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
         
         results = [(row.id, cosine_similarity(vector, row.vector)) for row in rows]
-        return results
+        # Sort results by similarity and return top_k
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
