@@ -1,6 +1,6 @@
 from config import Config
 from embedding import OpenAIEmbedder
-from similarity_search import AstraDBSimilaritySearch
+from similarity_search import AstraDBSimilaritySearch, PostgreSQLSimilaritySearch
 import logging
 
 
@@ -15,17 +15,30 @@ def main():
         # Load configuration
         config = Config()
 
-        # Initialize the embedder and similarity search
+        # Initialize the embedder
         embedder = OpenAIEmbedder(config.openai_api_key)
-        similarity_search = AstraDBSimilaritySearch(
-            config.astradb["keyspace"],
-            config.astradb["table"],
-            config.astradb["username"],
-            config.astradb["password"],
-            config.astradb["host"],
-            config.astradb["port"],
-            config.astradb["secure_connect_bundle"],
-        )
+
+        # Initialize the similarity search based on the database type
+        if config.database['type'] == 'astra':
+            similarity_search = AstraDBSimilaritySearch(
+                config.astradb["keyspace"],
+                config.astradb["table"],
+                config.astradb["username"],
+                config.astradb["password"],
+                config.astradb["host"],
+                config.astradb["port"],
+                config.astradb["secure_connect_bundle"],
+            )
+        elif config.database['type'] == 'postgresql':
+            similarity_search = PostgreSQLSimilaritySearch(
+                config.postgresql["host"],
+                config.postgresql["port"],
+                config.postgresql["database"],
+                config.postgresql["username"],
+                config.postgresql["password"]
+            )
+        else:
+            raise ValueError("Unsupported database type")
 
         # Embed a sample text
         sample_text = "This is a sample text for embedding."
